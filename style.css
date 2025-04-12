@@ -401,11 +401,48 @@ footer {
     border-radius: 8px;
     border-left: 4px solid #5f9ea0;
     transition: all 0.3s ease;
+    position: relative;
+    text-align: center;
 }
 
 .media-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.document-content {
+    margin-top: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.document-content h3 {
+    font-size: 1.1rem;
+    color: #00008B;
+    margin-bottom: 8px;
+}
+
+.document-content p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 12px;
+}
+
+.document-content a {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #5f9ea0;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+.document-content a:hover {
+    background: #00008B;
 }
 
 /* Responsive adjustments */
