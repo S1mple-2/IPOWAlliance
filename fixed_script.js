@@ -1,11 +1,101 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM fully loaded');
+    
+    // Initialize text download functionality
+    document.getElementById('downloadPDF')?.addEventListener('click', generatePDF);
+
+    // Initialize content toggle
+    document.getElementById('toggleContent')?.addEventListener('click', toggleContent);
+
+    // Initialize language buttons
     const langButtons = document.querySelectorAll('.lang-btn');
     console.log(`Found ${langButtons.length} language buttons`);
     
     if (langButtons.length === 0) {
         console.error('No language buttons found!');
         return;
+    }
+
+    // Text File Generation Function
+    function generatePDF() {
+        console.log('Download button clicked - initiating text file generation');
+        const loadingMsg = document.createElement('div');
+        loadingMsg.textContent = 'Generating text file...';
+        loadingMsg.style.position = 'fixed';
+        loadingMsg.style.top = '20px';
+        loadingMsg.style.right = '20px';
+        loadingMsg.style.padding = '10px';
+        loadingMsg.style.background = 'white';
+        loadingMsg.style.border = '1px solid black';
+        loadingMsg.style.zIndex = '1000';
+        document.body.appendChild(loadingMsg);
+
+        try {
+            // Get content - try multiple approaches
+            let content = 'Međunarodni Interdisciplinarni inovacijski centar za život "SAVEZ NARODA SVIJETA"\n\n';
+            const contentElements = [
+                document.getElementById('content'),
+                document.querySelector('.document-content'),
+                document.querySelector('main'),
+                document.querySelector('article')
+            ];
+            
+            for (const el of contentElements) {
+                if (el) {
+                    content += el.innerText || el.textContent || '';
+                    if (content.trim().length > 0) break;
+                }
+            }
+            
+            if (content.length <= 60) { // Just header length
+                content += document.body.innerText || document.body.textContent || '';
+            }
+
+            // Generate filename
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filename = `savez-naroda-svijeta_${timestamp}.txt`;
+            
+            console.log('Creating download link');
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = filename;
+            downloadLink.textContent = 'Click here to download text file';
+            downloadLink.style.display = 'block';
+            downloadLink.style.margin = '10px 0';
+            downloadLink.style.padding = '10px';
+            downloadLink.style.background = '#f0f0f0';
+            downloadLink.style.border = '1px solid #ccc';
+            
+            // Remove loading message and show download link
+            document.body.removeChild(loadingMsg);
+            document.body.appendChild(downloadLink);
+            
+            // Programmatically click the download link
+            downloadLink.click();
+            
+            // Revoke the object URL to free up memory
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 100);
+        } catch (error) {
+            console.error('PDF generation failed:', {
+                error: error,
+                message: error.message,
+                stack: error.stack
+            });
+            alert('PDF generation failed. Please try again. Error: ' + error.message);
+            document.body.removeChild(loadingMsg);
+        }
+    }
+
+    // Toggle Content Visibility
+    function toggleContent() {
+        const content = document.getElementById('content');
+        if (content) {
+            content.style.display = content.style.display === 'none' ? 'block' : 'none';
+        }
     }
 
     // Language content
@@ -82,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
             businessExp5: "Opsežan komercijalni, investicioni i konsultantski rad na području bivšeg Sovjetskog Saveza i Bliskog istoka od 2007. godine",
             businessOrganizations: "Osnovane poslovne organizacije",
             businessOrg1: "Potpredsjednik CICRAUN Izrael i Komore za trgovinu i industriju zemalja ZND-a",
-            businessOrg2: "Potpredsjednik prve asocijacije socijalnih i investicionih potrošačkih društava 'Denʹ Roždeniâ'"
+            businessOrg2: "Potpredsjednik prve asocijacije socijalnih i investicijskih potrošačkih društava 'Denʹ Roždeniâ'"
         },
         eng: {
             title: "Universal Peace Federation (UPF)",
@@ -197,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
             grprDesc: "Regierungsbeziehungen und Öffentlichkeitsarbeit",
             aboutCompany: "Über das Unternehmen",
             aboutDesc: "ALEX PRO betont Vertraulichkeit und persönlichen Service, gewährleistet Privatsphäre und maßgeschneiderte Unterstützung für Kunden. Über 10 Jahre Erfahrung im Luxus- und Premium-Immobiliensektor.",
-
+            
             // Ambassador translations
             ambassadorTitle: "Botschafter Dr. Alexander Shapiro Suliman",
             currentPositions: "Aktuelle Positionen",
